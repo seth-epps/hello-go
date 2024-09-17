@@ -1,0 +1,15 @@
+package main;
+
+option go_package = "./protos";
+
+service Hello {
+    rpc SayHello(HelloRequest) returns (HelloResponse){};
+}
+
+message HelloRequest {
+}
+
+message HelloResponse {
+    required string ip = 1;
+    required string message = 2;
+}
