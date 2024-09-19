@@ -11,6 +11,7 @@ import (
 
 type Response struct {
 	IP      string `json:"ip"`
+	Host    string `json:"host"`
 	Message string `json:"message"`
 }
 
@@ -37,6 +38,10 @@ func startHttp() error {
 }
 
 func handleGet(w http.ResponseWriter, req *http.Request) {
-	res := Response{IP: req.RemoteAddr, Message: "Hello From Go!"}
+	res := Response{
+		IP:      req.RemoteAddr,
+		Message: "Hello From Go!",
+		Host:    req.Host,
+	}
 	json.NewEncoder(w).Encode(res)
 }

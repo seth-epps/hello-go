@@ -12,4 +12,5 @@ message HelloRequest {
 message HelloResponse {
     required string ip = 1;
     required string message = 2;
+    required string authority = 3;
 }

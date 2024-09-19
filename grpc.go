@@ -7,9 +7,12 @@ import (
 
 	"github.com/seth-epps/hello-go/protos"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/reflection"
 )
+
+const authorityMeta = ":authority"
 
 type grpcServer struct {
 	protos.UnimplementedHelloServer
@@ -20,9 +23,15 @@ func (s *grpcServer) SayHello(ctx context.Context, req *protos.HelloRequest) (*p
 	peer, _ := peer.FromContext(ctx)
 	ip := peer.Addr.String()
 
+	authority := ""
+	if metaAuth := metadata.ValueFromIncomingContext(ctx, authorityMeta); len(metaAuth) != 0 {
+		authority = metaAuth[0]
+	}
+
 	return &protos.HelloResponse{
-		Ip:      &ip,
-		Message: &msg,
+		Ip:        &ip,
+		Message:   &msg,
+		Authority: &authority,
 	}, nil
 
 }
