@@ -6,6 +6,6 @@ generate: tools
 		protos/hello.proto
 
 
-.PHONE: tools
+.PHONY: tools
 tools:
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
