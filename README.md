@@ -1,5 +1,5 @@
 # hello-go
-Simple json and grpc web server written in go with [gorilla/mux](https://github.com/gorilla/mux)
+Simple json and grpc web server written in go
 
 This is _not_ intended to be used in any meaningful way other than to test in simple local and container runtimes.
 
