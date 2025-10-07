@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 type Response struct {
@@ -15,13 +13,13 @@ type Response struct {
 	Message string `json:"message"`
 }
 
-func startHttp() error {
-	r := mux.NewRouter()
-	r.HandleFunc("/", handleGet).Methods("GET")
+func startHttp(serverOpts serverOpts) error {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", handleGet(serverOpts.name))
 
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: r,
+		Handler: mux,
 	}
 
 	// using a dedicated listener instead of ListenAndServe
@@ -37,11 +35,13 @@ func startHttp() error {
 	return srv.Serve(lis)
 }
 
-func handleGet(w http.ResponseWriter, req *http.Request) {
-	res := Response{
-		IP:      req.RemoteAddr,
-		Message: "Hello From Go!",
-		Host:    req.Host,
+func handleGet(name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		res := Response{
+			IP:      req.RemoteAddr,
+			Message: "Hello From " + name + "!",
+			Host:    req.Host,
+		}
+		json.NewEncoder(w).Encode(res)
 	}
-	json.NewEncoder(w).Encode(res)
 }

@@ -16,10 +16,11 @@ const authorityMeta = ":authority"
 
 type grpcServer struct {
 	protos.UnimplementedHelloServer
+	name string
 }
 
 func (s *grpcServer) SayHello(ctx context.Context, req *protos.HelloRequest) (*protos.HelloResponse, error) {
-	msg := "Hello From Go!"
+	msg := "Hello From " + s.name + "!"
 	peer, _ := peer.FromContext(ctx)
 	ip := peer.Addr.String()
 
@@ -36,14 +37,14 @@ func (s *grpcServer) SayHello(ctx context.Context, req *protos.HelloRequest) (*p
 
 }
 
-func startGrpc() error {
+func startGrpc(serverOpts serverOpts) error {
 	lis, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		return fmt.Errorf("failed to listen on port 9090: %w", err)
 	}
 
 	s := grpc.NewServer()
-	protos.RegisterHelloServer(s, &grpcServer{})
+	protos.RegisterHelloServer(s, &grpcServer{name: serverOpts.name})
 	reflection.Register(s)
 
 	fmt.Printf("gRPC server listening at %v\n", lis.Addr())
